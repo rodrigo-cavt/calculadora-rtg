@@ -36,7 +36,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <title>Calculadora RTG</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/calculadora-rtg/manifest.json">
 <meta name="theme-color" content="#002f6c">
 <link rel="canonical" href="https://rodrigo-cavt.github.io/calculadora-rtg/">
 <style>
@@ -52,6 +52,7 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    touch-action: manipulation; /* Improve touch responsiveness */
   }
   body {
     font-family: Arial, Helvetica, sans-serif;
@@ -68,7 +69,7 @@
   header {
     background: var(--azul);
     color: #fff;
-    padding: 5px;
+    padding: 10px;
     text-align: center;
     font-size: 25px;
     font-weight: 700;
@@ -107,9 +108,11 @@
     width: 100%;
     max-width: 80px;
     text-align: center;
+    -webkit-appearance: none; /* Remove default mobile styling */
   }
   .controls input[type=checkbox] {
-    transform: scale(1.2);
+    transform: scale(1.3);
+    margin: 0 5px;
   }
   .controls .kmanual {
     max-width: 40px;
@@ -170,7 +173,7 @@
     display: none;
   }
   .resultado label {
-    padding: 4px 6px;
+    padding: 6px 8px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 12px;
@@ -180,6 +183,7 @@
     vertical-align: middle;
     min-height: 24px;
     text-align: center;
+    touch-action: manipulation; /* Better touch target */
   }
   .resultado input[type=radio]:disabled + label {
     background: #e0e0e0;
@@ -279,10 +283,12 @@
     background: var(--vermelho);
     color: #fff;
     border: none;
-    padding: 6px 10px;
+    padding: 8px 12px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    min-width: 80px;
+    touch-action: manipulation; /* Better touch target */
   }
   @media (max-width: 600px) {
     body {
@@ -309,13 +315,13 @@
       max-width: 35px;
     }
     th, td {
-      font-size: 16px;
+      font-size: 14px;
       padding: 3px;
       vertical-align: middle;
     }
     .adv {
       width: 100%;
-      font-size: 16px;
+      font-size: 14px;
       padding: 3px;
       vertical-align: middle;
     }
@@ -325,7 +331,7 @@
       height: 100%;
     }
     .resultado label {
-      padding: 3px 5px;
+      padding: 4px 6px;
       font-size: 10px;
       min-height: 20px;
       vertical-align: middle;
@@ -337,24 +343,25 @@
       opacity: 0.6;
     }
     .final {
-      font-size: 16px;
+      font-size: 14px;
     }
     .summary {
-      font-size: 16px;
+      font-size: 14px;
       padding: 8px;
     }
     .summary-table th, .summary-table td {
-      font-size: 16px;
+      font-size: 14px;
       padding: 4px;
       vertical-align: middle;
     }
     button {
       font-size: 12px;
-      padding: 5px 8px;
+      padding: 6px 10px;
+      min-width: 70px;
     }
     #tabela {
-      max-height: 48vh;
-      overflow: hidden;
+      max-height: 40vh;
+      overflow-y: auto;
     }
   }
 </style>
@@ -378,50 +385,307 @@
       </label>
       <span class="divider"></span>
       <label>K manual:
-        <input id="kManual" class="kmanual" type="number" value="25" disabledទ
-
-System: ### Notas Importantes
-- **Preservação do Código Existente**: O código fornecido é uma atualização do `index.html` anterior, mantendo toda a funcionalidade da Calculadora RTG, incluindo a lógica de cálculo para FIDE e CBX, o comportamento do botão "Limpar" (que agora preserva a seleção de "CBX" ou "FIDE"), o estilo (negrito em "Pontos", "Variação Total" e "Rtg. Final" coloridos, centralização vertical, divisor, etc.), e o suporte a XLSX. Apenas as tags e o script do PWA foram adicionados.
-- **Mudanças Específicas**:
-  - No `<head>`, após `<title>`:
-    - Adicionada a linha `<link rel="manifest" href="manifest.json">`.
-    - Adicionada `<meta name="theme-color" content="#002f6c">` (cor do cabeçalho).
-    - Adicionada `<link rel="canonical" href="https://seu-usuario.github.io/calculadora-rtg/">` (substitua `seu-usuario` pelo seu nome de usuário do GitHub).
-  - No final do `<body>`, antes de `</body>`:
-    - Adicionado o script de registro do service worker:
-      ```html
-      <script>
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js');
-          });
-        }
-      </script>
-      ```
-- **ID do Artefato**: Mantido o mesmo `artifact_id` (`2d8e016b-76b2-4b9c-86ae-c68d2e21754d`) pois é uma atualização do arquivo anterior.
-
-### Como Usar
-1. **Atualize o Repositório no GitHub**:
-   - No seu repositório (ex: `seu-usuario/calculadora-rtg`), clique em `index.html`.
-   - Clique no ícone de lápis (✏️) para editar.
-   - Substitua o conteúdo do `index.html` pelo código acima.
-   - Adicione uma mensagem de commit (ex: "Adiciona suporte a PWA") e clique em "Commit changes".
-2. **Verifique o GitHub Pages**:
-   - Acesse `https://seu-usuario.github.io/calculadora-rtg/` após 1-2 minutos para confirmar que o site foi atualizado.
-3. **Teste a Funcionalidade de PWA**:
-   - Certifique-se de que os arquivos `manifest.json`, `sw.js`, `icon-192.png`, e `icon-512.png` estão no repositório (conforme os passos 3.1 e 3.2 do guia anterior).
-   - Abra o site no Chrome (desktop ou Android) ou Safari (iOS).
-   - No Chrome, clique nos 3 pontos > "Adicionar à tela inicial" ou "Instalar app". No Safari, use "Adicionar à Tela de Início".
-   - Verifique se o app aparece na tela inicial do celular, abre em modo fullscreen e funciona offline (carrega a interface, mas cálculos podem não persistir offline sem dados salvos).
-4. **Valide o PWA**:
-   - No Chrome, abra DevTools (F12) > aba "Lighthouse" > selecione "Progressive Web App" > "Generate report". Deve indicar que o app é instalável.
-5. **Atualize o Canonical URL**:
-   - Substitua `seu-usuario` no `<link rel="canonical">` pelo seu nome de usuário do GitHub (ex: `https://joaodoe.github.io/calculadora-rtg/`).
-
-### Notas
-- **Arquivos Necessários**: Certifique-se de que `manifest.json`, `sw.js`, `icon-192.png`, e `icon-512.png` estão no repositório (raiz) e que os caminhos no `manifest.json` e `sw.js` correspondem ao nome do seu repositório (ex: `/calculadora-rtg/`).
-- **Funcionalidade Offline**: O service worker fornecido cacheia apenas os arquivos principais. Cálculos requerem entrada de dados, que não são salvos offline.
-- **Teste no Celular**: Após instalar como PWA, confirme que "CBX" permanece selecionado, "FIDE" e "CBX" estão habilitados após "Limpar", e que a interface mantém o layout (centralização, negrito, cores, etc.).
-- **Ícones**: Use ícones quadrados (192x192 e 512x512) gerados por ferramentas como [favicon.io](https://favicon.io). Certifique-se de que os nomes dos arquivos correspondem ao `manifest.json`.
-
-Se precisar de ajuda com os outros arquivos (`manifest.json`, `sw.js`, ícones) ou com algum erro no deploy, envie o nome do seu repositório ou detalhes do problema!
+        <input id="kManual" class="kmanual" type="number" value="25" disabled>
+      </label>
+      <div style="flex-grow: 1;"></div>
+      <button id="btnLimpar">Limpar</button>
+    </div>
+  </div>
+  <table id="tabela">
+    <thead>
+      <tr>
+        <th>Rd</th>
+        <th>Rtg Adv.</th>
+        <th>Res.</th>
+        <th>+/-</th>
+        <th>Rtg. Final</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res1" value="v" id="v1" disabled><label for="v1">V</label></span><span class="e"><input type="radio" name="res1" value="e" id="e1" disabled><label for="e1">E</label></span><span class="d"><input type="radio" name="res1" value="d" id="d1" disabled><label for="d1">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>2</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res2" value="v" id="v2" disabled><label for="v2">V</label></span><span class="e"><input type="radio" name="res2" value="e" id="e2" disabled><label for="e2">E</label></span><span class="d"><input type="radio" name="res2" value="d" id="d2" disabled><label for="d2">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>3</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res3" value="v" id="v3" disabled><label for="v3">V</label></span><span class="e"><input type="radio" name="res3" value="e" id="e3" disabled><label for="e3">E</label></span><span class="d"><input type="radio" name="res3" value="d" id="d3" disabled><label for="d3">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>4</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res4" value="v" id="v4" disabled><label for="v4">V</label></span><span class="e"><input type="radio" name="res4" value="e" id="e4" disabled><label for="e4">E</label></span><span class="d"><input type="radio" name="res4" value="d" id="d4" disabled><label for="d4">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>5</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res5" value="v" id="v5" disabled><label for="v5">V</label></span><span class="e"><input type="radio" name="res5" value="e" id="e5" disabled><label for="e5">E</label></span><span class="d"><input type="radio" name="res5" value="d" id="d5" disabled><label for="d5">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>6</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res6" value="v" id="v6" disabled><label for="v6">V</label></span><span class="e"><input type="radio" name="res6" value="e" id="e6" disabled><label for="e6">E</label></span><span class="d"><input type="radio" name="res6" value="d" id="d6" disabled><label for="d6">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>7</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res7" value="v" id="v7" disabled><label for="v7">V</label></span><span class="e"><input type="radio" name="res7" value="e" id="e7" disabled><label for="e7">E</label></span><span class="d"><input type="radio" name="res7" value="d" id="d7" disabled><label for="d7">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>8</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res8" value="v" id="v8" disabled><label for="v8">V</label></span><span class="e"><input type="radio" name="res8" value="e" id="e8" disabled><label for="e8">E</label></span><span class="d"><input type="radio" name="res8" value="d" id="d8" disabled><label for="d8">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>9</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res9" value="v" id="v9" disabled><label for="v9">V</label></span><span class="e"><input type="radio" name="res9" value="e" id="e9" disabled><label for="e9">E</label></span><span class="d"><input type="radio" name="res9" value="d" id="d9" disabled><label for="d9">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>10</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res10" value="v" id="v10" disabled><label for="v10">V</label></span><span class="e"><input type="radio" name="res10" value="e" id="e10" disabled><label for="e10">E</label></span><span class="d"><input type="radio" name="res10" value="d" id="d10" disabled><label for="d10">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+      <tr><td>11</td><td><input class="adv" type="number" min="0"></td><td class="resultado"><span class="v"><input type="radio" name="res11" value="v" id="v11" disabled><label for="v11">V</label></span><span class="e"><input type="radio" name="res11" value="e" id="e11" disabled><label for="e11">E</label></span><span class="d"><input type="radio" name="res11" value="d" id="d11" disabled><label for="d11">D</label></span></td><td class="delta">-</td><td class="final"></td></tr>
+    </tbody>
+  </table>
+  <div class="summary" id="summary">
+    <table class="summary-table">
+      <tr>
+        <th>Pontos</th>
+        <th>Variação Total</th>
+        <th>Rtg. Final</th>
+      </tr>
+      <tr id="totais">
+        <td class="pontos">0</td>
+        <td class="variacao-total zero">0.00</td>
+        <td class="rtg-final zero">0</td>
+      </tr>
+    </table>
+  </div>
+</div>
+<script>
+// --- CONFIGURAÇÃO ---
+const ROUNDS = 11;
+const tbody = document.querySelector('#tabela tbody');
+// utilitários
+function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
+function round2(v){ return Math.round((v + Number.EPSILON) * 100) / 100; }
+// Tabela FIDE 8.1b para E
+const fideTable = [
+  {min: 0, max: 3, pd: 0.50},
+  {min: 4, max: 10, pd: 0.51},
+  {min: 11, max: 17, pd: 0.52},
+  {min: 18, max: 25, pd: 0.53},
+  {min: 26, max: 32, pd: 0.54},
+  {min: 33, max: 39, pd: 0.55},
+  {min: 40, max: 46, pd: 0.56},
+  {min: 47, max: 53, pd: 0.57},
+  {min: 54, max: 61, pd: 0.58},
+  {min: 62, max: 68, pd: 0.59},
+  {min: 69, max: 76, pd: 0.60},
+  {min: 77, max: 83, pd: 0.61},
+  {min: 84, max: 91, pd: 0.62},
+  {min: 92, max: 98, pd: 0.63},
+  {min: 99, max: 106, pd: 0.64},
+  {min: 107, max: 113, pd: 0.65},
+  {min: 114, max: 121, pd: 0.66},
+  {min: 122, max: 129, pd: 0.67},
+  {min: 130, max: 137, pd: 0.68},
+  {min: 138, max: 145, pd: 0.69},
+  {min: 146, max: 153, pd: 0.70},
+  {min: 154, max: 162, pd: 0.71},
+  {min: 163, max: 170, pd: 0.72},
+  {min: 171, max: 179, pd: 0.73},
+  {min: 180, max: 188, pd: 0.74},
+  {min: 189, max: 197, pd: 0.75},
+  {min: 198, max: 206, pd: 0.76},
+  {min: 207, max: 215, pd: 0.77},
+  {min: 216, max: 225, pd: 0.78},
+  {min: 226, max: 235, pd: 0.79},
+  {min: 236, max: 245, pd: 0.80},
+  {min: 246, max: 256, pd: 0.81},
+  {min: 257, max: 267, pd: 0.82},
+  {min: 268, max: 278, pd: 0.83},
+  {min: 279, max: 290, pd: 0.84},
+  {min: 291, max: 302, pd: 0.85},
+  {min: 303, max: 315, pd: 0.86},
+  {min: 316, max: 328, pd: 0.87},
+  {min: 329, max: 344, pd: 0.88},
+  {min: 345, max: 357, pd: 0.89},
+  {min: 358, max: 374, pd: 0.90},
+  {min: 375, max: 391, pd: 0.91},
+  {min: 392, max: 411, pd: 0.92},
+  {min: 412, max: 432, pd: 0.93},
+  {min: 433, max: 456, pd: 0.94},
+  {min: 457, max: 484, pd: 0.95},
+  {min: 485, max: 517, pd: 0.96},
+  {min: 518, max: 559, pd: 0.97},
+  {min: 560, max: 619, pd: 0.98},
+  {min: 620, max: 735, pd: 0.99},
+  {min: 736, max: Infinity, pd: 1.00}
+];
+// Função para obter pd da tabela FIDE baseada na diff absoluta
+function getPdFromTable(diff) {
+  for (let entry of fideTable) {
+    if (diff >= entry.min && diff <= entry.max) {
+      return entry.pd;
+    }
+  }
+  return 1.00;
+}
+// Função para obter E (expectativa para o jogador) usando a tabela
+function getExpected(dr) {
+  const diff = Math.abs(dr);
+  const pdHigher = getPdFromTable(diff);
+  if (dr > 0) {
+    return 1 - pdHigher;
+  } else if (dr < 0) {
+    return pdHigher;
+  } else {
+    return 0.5;
+  }
+}
+// K automático
+function kAutomatic(ratingBase, tipo) {
+  if (tipo === 'fide') {
+    if (ratingBase < 2400) return 20;
+    return 10;
+  } else { // cbx
+    if (ratingBase > 2300) return 10;
+    if (ratingBase >= 2000) return 15;
+    return 25;
+  }
+}
+// Habilita/desabilita botões de resultado com base no input de Rtg Adv.
+function updateResultButtons() {
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.forEach((tr) => {
+    const advInput = tr.querySelector('.adv');
+    const radioButtons = tr.querySelectorAll('.resultado input[type=radio]');
+    const advValue = advInput.value.trim();
+    const isValidRating = advValue !== '' && Number(advValue) > 0;
+    radioButtons.forEach(radio => {
+      radio.disabled = !isValidRating;
+    });
+  });
+}
+// cálculo central
+function calcular(){
+  const tipoRadios = document.querySelectorAll('input[name="tipoRating"]');
+  let tipo = 'cbx';
+  for (const radio of tipoRadios) {
+    if (radio.checked) {
+      tipo = radio.value;
+      break;
+    }
+  }
+  const ratingBase = Number(document.getElementById('ratingInicial').value) || 0;
+  const useAutoK = document.getElementById('kAuto').checked;
+  const kManual = Number(document.getElementById('kManual').value) || 25;
+  const K_tournament = useAutoK ? kAutomatic(ratingBase, tipo) : kManual;
+  let somaDelta = 0.0;
+  let totalPts = 0.0;
+  let jogos = 0;
+  let somaOppForPerf = 0.0;
+  // Primeiro pass: coletar rated opponents para avg_rated
+  let sumRated = 0;
+  let countRated = 0;
+  const rows = Array.from(tbody.querySelectorAll('tr'));
+  rows.forEach((tr) => {
+    const advRaw = tr.querySelector('.adv').value.trim();
+    const adv = advRaw === '' ? 0 : Number(advRaw);
+    const radioSel = tr.querySelector('input[type=radio]:checked');
+    if (radioSel && adv > 0) {
+      sumRated += adv;
+      countRated++;
+    }
+  });
+  const avgRated = countRated > 0 ? sumRated / countRated : ratingBase;
+  // Segundo pass: calcular deltas
+  rows.forEach((tr, idx) => {
+    const advInput = tr.querySelector('.adv');
+    const advRaw = advInput.value.trim();
+    const adv = advRaw === '' ? 0 : Number(advRaw);
+    const radioSel = tr.querySelector('input[type=radio]:checked');
+    const tdDelta = tr.querySelector('.delta');
+    const tdFinal = tr.querySelector('.final');
+    if (adv === 0 && !radioSel) {
+      tdDelta.textContent = '-';
+      tdDelta.className = 'delta';
+      tdFinal.textContent = '';
+      tdFinal.className = 'final';
+      return;
+    }
+    if (!radioSel) {
+      tdDelta.textContent = '-';
+      tdDelta.className = 'delta';
+      tdFinal.textContent = Math.round(ratingBase + somaDelta);
+      tdFinal.className = 'final ' + ((ratingBase + somaDelta) > ratingBase ? 'pos' : ((ratingBase + somaDelta) < ratingBase ? 'neg' : 'zero'));
+      return;
+    }
+    const S = (radioSel.value === 'v') ? 1 : (radioSel.value === 'e' ? 0.5 : 0);
+    let delta = 0;
+    if (adv > 0) {
+      let dr = adv - ratingBase;
+      dr = clamp(dr, -400, 400);
+      const E = getExpected(dr);
+      const K = K_tournament;
+      const deltaRaw = K * (S - E);
+      delta = round2(deltaRaw);
+    }
+    somaDelta = round2(somaDelta + delta);
+    const ratingAgora = round2(ratingBase + somaDelta);
+    tdDelta.textContent = (delta > 0 ? '+' : '') + delta.toFixed(2);
+    tdDelta.className = 'delta ' + (delta > 0 ? 'pos' : (delta < 0 ? 'neg' : 'zero'));
+    tdFinal.textContent = Math.round(ratingAgora);
+    tdFinal.className = 'final ' + (ratingAgora > ratingBase ? 'pos' : (ratingAgora < ratingBase ? 'neg' : 'zero'));
+    jogos += 1;
+    totalPts += S;
+    somaOppForPerf += (adv > 0 ? adv : avgRated);
+  });
+  const totaisRow = document.querySelector('#totais');
+  totaisRow.innerHTML = `
+    <td class="pontos">${totalPts}</td>
+    <td class="variacao-total ${somaDelta > 0 ? 'pos' : (somaDelta < 0 ? 'neg' : 'zero')}">${somaDelta.toFixed(2)}</td>
+    <td class="rtg-final ${somaDelta > 0 ? 'pos' : (somaDelta < 0 ? 'neg' : 'zero')}">${Math.round(ratingBase + somaDelta)}</td>
+  `;
+}
+// eventos
+document.querySelectorAll('input[name="tipoRating"]').forEach(radio => radio.addEventListener('change', calcular));
+document.getElementById('ratingInicial').addEventListener('input', calcular);
+document.getElementById('kAuto').addEventListener('change', function() {
+  const kManual = document.getElementById('kManual');
+  if (this.checked) {
+    kManual.value = '';
+    kManual.disabled = true;
+  } else {
+    kManual.disabled = false;
+  }
+  calcular();
+});
+document.getElementById('kManual').addEventListener('input', calcular);
+tbody.addEventListener('input', (e) => {
+  if (e.target.classList.contains('adv')) {
+    updateResultButtons();
+  }
+  calcular();
+});
+tbody.addEventListener('change', calcular);
+// botão limpar
+function limpar() {
+  // Preserva o estado atual de tipoRating
+  const tipoRadios = document.querySelectorAll('input[name="tipoRating"]');
+  const currentTipo = Array.from(tipoRadios).find(radio => radio.checked)?.value || 'cbx';
+  // Limpa campos
+  document.getElementById('ratingInicial').value = '';
+  document.getElementById('kAuto').checked = true;
+  document.getElementById('kManual').value = '25';
+  document.getElementById('kManual').disabled = true;
+  document.querySelectorAll('.adv').forEach(i => i.value = '');
+  document.querySelectorAll('.resultado input[type=radio]').forEach(r => {
+    r.checked = false;
+    r.disabled = true;
+  });
+  document.querySelectorAll('.delta').forEach(td => { td.textContent = '-'; td.className = 'delta'; });
+  document.querySelectorAll('.final').forEach(td => td.textContent = '');
+  const totaisRow = document.querySelector('#totais');
+  totaisRow.innerHTML = `
+    <td class="pontos">0</td>
+    <td class="variacao-total zero">0.00</td>
+    <td class="rtg-final zero">0</td>
+  `;
+  // Restaura o estado de tipoRating
+  document.getElementById('cbx').checked = currentTipo === 'cbx';
+  document.getElementById('fide').checked = currentTipo === 'fide';
+  document.querySelectorAll('input[name="tipoRating"]').forEach(radio => {
+    radio.disabled = false;
+  });
+  calcular();
+}
+document.getElementById('btnLimpar').addEventListener('click', limpar);
+// inicializa
+updateResultButtons();
+calcular();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/calculadora-rtg/sw.js', { scope: '/calculadora-rtg/' })
+        .then(registration => {
+          console.log('ServiceWorker registered with scope:', registration.scope);
+        })
+        .catch(error => {
+          console.error('ServiceWorker registration failed:', error);
+        });
+    });
+  }
+</script>
+</body>
+</html>
