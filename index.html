@@ -5,36 +5,139 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calculadora de Rating - FIDE / CBX / FPBX</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; color: #333; }
-    h1 { text-align: center; color: #2c3e50; }
-    .container { max-width: 900px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .campo { margin: 15px 0; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-    .campo label { font-weight: bold; min-width: 120px; }
-    input[type="number"], select { padding: 8px; font-size: 16px; border: 1px solid #ccc; border-radius: 4px; width: 100px; }
-    button { padding: 10px 20px; font-size: 16px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #2980b9; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-    th { background: #f2f2f2; }
-    .adv { width: 60px; }
-    .resultado { display: flex; justify-content: center; gap: 5px; }
-    .delta, .final { font-weight: bold; }
-    .pos { color: green; }
-    .neg { color: red; }
-    .zero { color: #777; }
-    #totais { font-weight: bold; background: #f9f9f9; }
-    #kManualContainer { margin-top: 10px; }
+    :root {
+      --azul: #002f6c;
+      --fundo: #f4f6fa;
+      --verde: #28a745;
+      --vermelho: #dc3545;
+      --cinza: #e9eef7;
+      --texto: #111;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--fundo);
+      color: var(--texto);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+    header {
+      background: var(--azul);
+      color: #fff;
+      padding: 12px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: 20px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    .campo {
+      margin: 15px 0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+    }
+    .campo label {
+      font-weight: bold;
+      min-width: 120px;
+    }
+    input[type="number"], select {
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: var(--vermelho);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover { background: #c82333; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      font-size: 16px;
+    }
+    th {
+      background: var(--azul);
+      color: #fff;
+    }
+    .adv { width: 70px; }
+    .resultado {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+    }
+    .resultado label {
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      min-width: 28px;
+    }
+    .resultado input[type="radio"] { display: none; }
+    .resultado input:disabled + label {
+      background: #eee;
+      color: #999;
+      cursor: not-allowed;
+    }
+    .v label { background: #dff5df; color: var(--verde); }
+    .e label { background: #f0f0f0; color: #555; }
+    .d label { background: #ffe6e6; color: var(--vermelho); }
+    .v input:checked + label { background: var(--verde); color: #fff; }
+    .e input:checked + label { background: #6c757d; color: #fff; }
+    .d input:checked + label { background: var(--vermelho); color: #fff; }
+    .delta.pos { color: var(--verde); font-weight: bold; }
+    .delta.neg { color: var(--vermelho); font-weight: bold; }
+    .delta.zero { color: #000; }
+    .final.pos { color: var(--verde); font-weight: bold; }
+    .final.neg { color: var(--vermelho); font-weight: bold; }
+    .final.zero { color: #000; }
+    #totais {
+      font-weight: bold;
+      background: #f9f9f9;
+    }
+    #kManualContainer { display: none; }
+    @media (max-width: 600px) {
+      .campo { flex-direction: column; align-items: flex-start; }
+      input[type="number"], select { width: 100%; max-width: 100%; }
+      table { font-size: 14px; }
+      .adv { width: 60px; }
+      .resultado label { padding: 4px 6px; font-size: 11px; }
+    }
   </style>
 </head>
 <body>
+  <header>Calculadora de Rating</header>
   <div class="container">
-    <h1>Calculadora de Rating</h1>
-    <p style="text-align:center;">FIDE • CBX • FPBX</p>
-
     <form>
       <div class="campo">
         <label for="ratingInicial">Rating Inicial:</label>
-        <input type="number" id="ratingInicial" value="1861" min="0" step="1" />
+        <input type="number" id="ratingInicial" value="1944" min="0" />
       </div>
 
       <div class="campo">
@@ -44,7 +147,7 @@
         <label><input type="radio" name="tipoRating" value="fpbx"> FPBX</label>
       </div>
 
-      <div class="campo" id="kManualContainer" style="display: none;">
+      <div class="campo" id="kManualContainer">
         <label for="kManual">K (CBX):</label>
         <select id="kManual">
           <option value="10">10</option>
@@ -71,7 +174,7 @@
         </tr>
       </thead>
       <tbody>
-        <!-- 11 linhas automáticas -->
+        <!-- 11 linhas -->
       </tbody>
       <tfoot>
         <tr id="totais">
@@ -85,7 +188,6 @@
   </div>
 
   <script>
-    // --- CONFIGURAÇÃO ---
     const ROUNDS = 11;
     const tbody = document.querySelector('#tabela tbody');
 
@@ -106,11 +208,9 @@
       tbody.appendChild(tr);
     }
 
-    // utilitários
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     function round2(v) { return Math.round((v + Number.EPSILON) * 100) / 100; }
 
-    // Tabela FIDE 8.1b
     const fideTable = [
       {min: 0, max: 3, pd: 0.50}, {min: 4, max: 10, pd: 0.51}, {min: 11, max: 17, pd: 0.52},
       {min: 18, max: 25, pd: 0.53}, {min: 26, max: 32, pd: 0.54}, {min: 33, max: 39, pd: 0.55},
@@ -132,63 +232,44 @@
     ];
 
     function getPdFromTable(diff) {
-      for (let entry of fideTable) {
-        if (diff >= entry.min && diff <= entry.max) return entry.pd;
-      }
+      for (let e of fideTable) if (diff >= e.min && diff <= e.max) return e.pd;
       return 1.00;
     }
 
-    // Função para obter E
     function getExpected(dr, tipo) {
       if (tipo === 'fide' || tipo === 'fpbx') {
         const diff = Math.abs(dr);
-        const pdHigher = getPdFromTable(diff);
-        if (dr > 0) return 1 - pdHigher;
-        if (dr < 0) return pdHigher;
-        return 0.5;
+        const pd = getPdFromTable(diff);
+        return dr > 0 ? 1 - pd : (dr < 0 ? pd : 0.5);
       }
       return 1 / (1 + Math.pow(10, -dr / 400));
     }
 
-    // K automático (FIDE)
-    function kFide(ratingBase) {
-      return ratingBase < 2400 ? 20 : 10;
-    }
+    function kFide(r) { return r < 2400 ? 20 : 10; }
 
-    // Mostrar K manual apenas para CBX
-    document.querySelectorAll('input[name="tipoRating"]').forEach(radio => {
-      radio.addEventListener('change', () => {
-        document.getElementById('kManualContainer').style.display = radio.value === 'cbx' ? 'block' : 'none';
+    // Mostrar K manual
+    document.querySelectorAll('input[name="tipoRating"]').forEach(r => {
+      r.addEventListener('change', () => {
+        document.getElementById('kManualContainer').style.display = r.value === 'cbx' ? 'block' : 'none';
       });
     });
 
-    // Habilitar botões de resultado
-    function updateResultButtons() {
-      const rows = Array.from(tbody.querySelectorAll('tr'));
-      rows.forEach((tr) => {
-        const advInput = tr.querySelector('.adv');
-        const radioButtons = tr.querySelectorAll('.resultado input[type=radio]');
-        const advValue = advInput.value.trim();
-        const isValidRating = advValue !== '' && Number(advValue) > 0;
-        radioButtons.forEach(radio => {
-          radio.disabled = !isValidRating;
-        });
+    // Habilitar botões
+    function updateButtons() {
+      tbody.querySelectorAll('tr').forEach(tr => {
+        const adv = tr.querySelector('.adv').value.trim();
+        const radios = tr.querySelectorAll('.resultado input[type=radio]');
+        const valid = adv !== '' && Number(adv) > 0;
+        radios.forEach(r => r.disabled = !valid);
       });
     }
+    tbody.addEventListener('input', updateButtons);
+    tbody.addEventListener('change', updateButtons);
 
-    // Atualizar botões ao digitar
-    tbody.addEventListener('input', updateResultButtons);
-    tbody.addEventListener('change', updateResultButtons);
-
-    // Cálculo central
     function calcular() {
       const tipo = document.querySelector('input[name="tipoRating"]:checked').value;
       const ratingBase = Number(document.getElementById('ratingInicial').value) || 0;
-
-      let K;
-      if (tipo === 'fide') K = kFide(ratingBase);
-      else if (tipo === 'fpbx') K = 20;
-      else K = Number(document.getElementById('kManual').value);
+      const K = tipo === 'fide' ? kFide(ratingBase) : (tipo === 'fpbx' ? 20 : Number(document.getElementById('kManual').value));
 
       let somaDelta = 0;
       let totalPts = 0;
@@ -198,45 +279,33 @@
 
       const rows = Array.from(tbody.querySelectorAll('tr'));
 
-      // Primeiro pass: rated opponents
-      rows.forEach((tr) => {
+      rows.forEach(tr => {
         const advRaw = tr.querySelector('.adv').value.trim();
         const adv = advRaw === '' ? 0 : Number(advRaw);
-        const radioSel = tr.querySelector('input[type=radio]:checked');
-        if (radioSel && adv > 0) {
-          sumRated += adv;
-          countRated++;
-        }
+        const radio = tr.querySelector('input[type=radio]:checked');
+        if (radio && adv > 0) { sumRated += adv; countRated++; }
       });
       const avgRated = countRated > 0 ? sumRated / countRated : ratingBase;
 
-      // Segundo pass: calcular
-      rows.forEach((tr) => {
-        const advInput = tr.querySelector('.adv');
-        const advRaw = advInput.value.trim();
+      rows.forEach(tr => {
+        const advRaw = tr.querySelector('.adv').value.trim();
         const adv = advRaw === '' ? 0 : Number(advRaw);
-        const radioSel = tr.querySelector('input[type=radio]:checked');
+        const radio = tr.querySelector('input[type=radio]:checked');
         const tdDelta = tr.querySelector('.delta');
         const tdFinal = tr.querySelector('.final');
 
-        if (adv === 0 && !radioSel) {
+        if (!radio) {
           tdDelta.textContent = '-';
-          tdFinal.textContent = '';
-          return;
-        }
-        if (!radioSel) {
-          tdDelta.textContent = '-';
-          tdFinal.textContent = Math.round(ratingBase + somaDelta);
+          tdFinal.textContent = adv > 0 ? Math.round(ratingBase + somaDelta) : '';
           return;
         }
 
-        const S = radioSel.value === 'v' ? 1 : (radioSel.value === 'e' ? 0.5 : 0);
+        const S = radio.value === 'v' ? 1 : (radio.value === 'e' ? 0.5 : 0);
         let delta = 0;
-
         const isUnrated = adv <= 0;
-        const ignoreUnrated = (tipo === 'cbx' || tipo === 'fpbx') && isUnrated;
+        const ignore = (tipo === 'cbx' || tipo === 'fpbx') && isUnrated;
 
-        if (!ignoreUnrated && adv > 0) {
+        if (!ignore && adv > 0) {
           let dr = adv - ratingBase;
           dr = clamp(dr, -800, 800);
           const E = getExpected(dr, tipo);
@@ -245,31 +314,30 @@
         }
 
         somaDelta = tipo === 'cbx' ? somaDelta + delta : round2(somaDelta + delta);
-        const ratingAgora = ratingBase + somaDelta;
+        const ratingAtual = ratingBase + somaDelta;
 
         tdDelta.textContent = delta === 0 ? '0' : (delta > 0 ? '+' : '') + (tipo === 'cbx' ? delta : delta.toFixed(2));
         tdDelta.className = 'delta ' + (delta > 0 ? 'pos' : (delta < 0 ? 'neg' : 'zero'));
-        tdFinal.textContent = Math.round(ratingAgora);
-        tdFinal.className = 'final ' + (ratingAgora > ratingBase ? 'pos' : (ratingAgora < ratingBase ? 'neg' : 'zero'));
+        tdFinal.textContent = Math.round(ratingAtual);
+        tdFinal.className = 'final ' + (ratingAtual > ratingBase ? 'pos' : (ratingAtual < ratingBase ? 'neg' : 'zero'));
 
-        if (!ignoreUnrated) {
+        if (!ignore) {
           jogos++;
           totalPts += S;
         }
       });
 
-      const totaisRow = document.querySelector('#totais');
-      const variacaoTotal = tipo === 'cbx' ? Math.round(somaDelta) : round2(somaDelta);
-      totaisRow.innerHTML = `
+      const totais = document.querySelector('#totais');
+      const variacao = tipo === 'cbx' ? Math.round(somaDelta) : round2(somaDelta);
+      totais.innerHTML = `
         <td colspan="2"><strong>Totais</strong></td>
         <td class="pontos">${totalPts}</td>
-        <td class="variacao-total ${variacaoTotal > 0 ? 'pos' : (variacaoTotal < 0 ? 'neg' : 'zero')}">${variacaoTotal > 0 ? '+' : ''}${variacaoTotal}</td>
-        <td class="rtg-final ${variacaoTotal > 0 ? 'pos' : (variacaoTotal < 0 ? 'neg' : 'zero')}">${Math.round(ratingBase + variacaoTotal)}</td>
+        <td class="variacao-total ${variacao > 0 ? 'pos' : (variacao < 0 ? 'neg' : 'zero')}">${variacao > 0 ? '+' : ''}${variacao}</td>
+        <td class="rtg-final ${variacao > 0 ? 'pos' : (variacao < 0 ? 'neg' : 'zero')}">${Math.round(ratingBase + variacao)}</td>
       `;
     }
 
-    // Inicializar
-    updateResultButtons();
+    updateButtons();
   </script>
 </body>
 </html>
