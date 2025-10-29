@@ -82,6 +82,7 @@
       justify-content: center;
       gap: 4px;
     }
+    .resultado input[type="radio"] { display: none; }
     .resultado label {
       padding: 6px 10px;
       border-radius: 4px;
@@ -89,19 +90,22 @@
       font-size: 12px;
       min-width: 28px;
       transition: all 0.2s;
+      font-weight: bold;
     }
-    .resultado input[type="radio"] { display: none; }
     .resultado input:disabled + label {
       background: #eee !important;
       color: #999 !important;
       cursor: not-allowed;
     }
+    /* Cores padrão (não selecionado) */
     .v label { background: #e8f5e8; color: var(--verde); }
     .e label { background: #f0f0f0; color: #555; }
     .d label { background: #ffe6e6; color: var(--vermelho); }
+    /* Cores quando selecionado */
     .v input:checked + label { background: var(--verde); color: #fff; }
     .e input:checked + label { background: var(--cinza); color: #fff; }
     .d input:checked + label { background: var(--vermelho); color: #fff; }
+
     .delta.pos { color: var(--verde); font-weight: bold; }
     .delta.neg { color: var(--vermelho); font-weight: bold; }
     .delta.zero { color: #000; }
@@ -183,9 +187,9 @@
         <td>${i}</td>
         <td><input type="number" class="adv" min="0" step="1" /></td>
         <td class="resultado">
-          <label><input type="radio" name="res${i}" value="v" disabled> V</label>
-          <label><input type="radio" name="res${i}" value="e" disabled> E</label>
-          <label><input type="radio" name="res${i}" value="d" disabled> D</label>
+          <span class="v"><input type="radio" name="res${i}" value="v" disabled><label>V</label></span>
+          <span class="e"><input type="radio" name="res${i}" value="e" disabled><label>E</label></span>
+          <span class="d"><input type="radio" name="res${i}" value="d" disabled><label>D</label></span>
         </td>
         <td class="delta">-</td>
         <td class="final"></td>
@@ -237,7 +241,7 @@
       r.addEventListener('change', () => {
         const show = r.value === 'cbx';
         document.getElementById('kManualContainer').style.display = show ? 'flex' : 'none';
-        if (show) calcular();
+        calcular();
       });
     });
 
@@ -260,18 +264,8 @@
       let somaDelta = 0;
       let totalPts = 0;
       let jogos = 0;
-      let sumRated = 0;
-      let countRated = 0;
 
       const rows = Array.from(tbody.querySelectorAll('tr'));
-
-      rows.forEach(tr => {
-        const advRaw = tr.querySelector('.adv').value.trim();
-        const adv = advRaw === '' ? 0 : Number(advRaw);
-        const radio = tr.querySelector('input[type=radio]:checked');
-        if (radio && adv > 0) { sumRated += adv; countRated++; }
-      });
-      const avgRated = countRated > 0 ? sumRated / countRated : ratingBase;
 
       rows.forEach(tr => {
         const advRaw = tr.querySelector('.adv').value.trim();
@@ -292,7 +286,7 @@
         const ignore = (tipo === 'cbx' || tipo === 'fpbx') && isUnrated;
 
         if (!ignore && adv > 0) {
-          let dr = adv - ratingBase;
+          let dr = adv - ratingBase;  // CORRETO: dr = adversário - seu rating
           dr = clamp(dr, -800, 800);
           const E = getExpected(dr, tipo);
           const deltaRaw = K * (S - E);
