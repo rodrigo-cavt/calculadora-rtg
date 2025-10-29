@@ -10,7 +10,7 @@
       --fundo: #f4f6fa;
       --verde: #28a745;
       --vermelho: #dc3545;
-      --cinza: #e9eef7;
+      --cinza: #6c757d;
       --texto: #111;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -27,7 +27,7 @@
     header {
       background: var(--azul);
       color: #fff;
-      padding: 12px;
+      padding: 14px;
       text-align: center;
       font-size: 24px;
       font-weight: 700;
@@ -50,7 +50,7 @@
     }
     .campo label {
       font-weight: bold;
-      min-width: 120px;
+      min-width: 130px;
     }
     input[type="number"], select {
       padding: 8px;
@@ -59,16 +59,6 @@
       border-radius: 4px;
       width: 100px;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: var(--vermelho);
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover { background: #c82333; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -98,18 +88,19 @@
       cursor: pointer;
       font-size: 12px;
       min-width: 28px;
+      transition: all 0.2s;
     }
     .resultado input[type="radio"] { display: none; }
     .resultado input:disabled + label {
-      background: #eee;
-      color: #999;
+      background: #eee !important;
+      color: #999 !important;
       cursor: not-allowed;
     }
-    .v label { background: #dff5df; color: var(--verde); }
+    .v label { background: #e8f5e8; color: var(--verde); }
     .e label { background: #f0f0f0; color: #555; }
     .d label { background: #ffe6e6; color: var(--vermelho); }
     .v input:checked + label { background: var(--verde); color: #fff; }
-    .e input:checked + label { background: #6c757d; color: #fff; }
+    .e input:checked + label { background: var(--cinza); color: #fff; }
     .d input:checked + label { background: var(--vermelho); color: #fff; }
     .delta.pos { color: var(--verde); font-weight: bold; }
     .delta.neg { color: var(--vermelho); font-weight: bold; }
@@ -124,7 +115,7 @@
     #kManualContainer { display: none; }
     @media (max-width: 600px) {
       .campo { flex-direction: column; align-items: flex-start; }
-      input[type="number"], select { width: 100%; max-width: 100%; }
+      input[type="number"], select { width: 100%; }
       table { font-size: 14px; }
       .adv { width: 60px; }
       .resultado label { padding: 4px 6px; font-size: 11px; }
@@ -134,34 +125,28 @@
 <body>
   <header>Calculadora de Rating</header>
   <div class="container">
-    <form>
-      <div class="campo">
-        <label for="ratingInicial">Rating Inicial:</label>
-        <input type="number" id="ratingInicial" value="1944" min="0" />
-      </div>
+    <div class="campo">
+      <label for="ratingInicial">Rating Inicial:</label>
+      <input type="number" id="ratingInicial" value="1944" min="0" />
+    </div>
 
-      <div class="campo">
-        <label>Tipo de Rating:</label>
-        <label><input type="radio" name="tipoRating" value="fide" checked> FIDE</label>
-        <label><input type="radio" name="tipoRating" value="cbx"> CBX</label>
-        <label><input type="radio" name="tipoRating" value="fpbx"> FPBX</label>
-      </div>
+    <div class="campo">
+      <label>Tipo de Rating:</label>
+      <label><input type="radio" name="tipoRating" value="fide" checked> FIDE</label>
+      <label><input type="radio" name="tipoRating" value="cbx"> CBX</label>
+      <label><input type="radio" name="tipoRating" value="fpbx"> FPBX</label>
+    </div>
 
-      <div class="campo" id="kManualContainer">
-        <label for="kManual">K (CBX):</label>
-        <select id="kManual">
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20" selected>20</option>
-          <option value="25">25</option>
-          <option value="40">40</option>
-        </select>
-      </div>
-
-      <div class="campo">
-        <button type="button" onclick="calcular()">Calcular</button>
-      </div>
-    </form>
+    <div class="campo" id="kManualContainer">
+      <label for="kManual">K (CBX):</label>
+      <select id="kManual">
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20" selected>20</option>
+        <option value="25">25</option>
+        <option value="40">40</option>
+      </select>
+    </div>
 
     <table id="tabela">
       <thead>
@@ -250,7 +235,9 @@
     // Mostrar K manual
     document.querySelectorAll('input[name="tipoRating"]').forEach(r => {
       r.addEventListener('change', () => {
-        document.getElementById('kManualContainer').style.display = r.value === 'cbx' ? 'block' : 'none';
+        const show = r.value === 'cbx';
+        document.getElementById('kManualContainer').style.display = show ? 'flex' : 'none';
+        if (show) calcular();
       });
     });
 
@@ -263,9 +250,8 @@
         radios.forEach(r => r.disabled = !valid);
       });
     }
-    tbody.addEventListener('input', updateButtons);
-    tbody.addEventListener('change', updateButtons);
 
+    // Cálculo em tempo real
     function calcular() {
       const tipo = document.querySelector('input[name="tipoRating"]:checked').value;
       const ratingBase = Number(document.getElementById('ratingInicial').value) || 0;
@@ -296,7 +282,7 @@
 
         if (!radio) {
           tdDelta.textContent = '-';
-          tdFinal.textContent = adv > 0 ? Math.round(ratingBase + somaDelta) : '';
+          tdFinal.textContent = '';
           return;
         }
 
@@ -337,7 +323,15 @@
       `;
     }
 
+    // Eventos em tempo real
+    document.getElementById('ratingInicial').addEventListener('input', calcular);
+    document.getElementById('kManual').addEventListener('change', calcular);
+    tbody.addEventListener('input', () => { updateButtons(); calcular(); });
+    tbody.addEventListener('change', () => { updateButtons(); calcular(); });
+
+    // Inicializar
     updateButtons();
+    calcular();
   </script>
 </body>
 </html>
