@@ -97,11 +97,11 @@
       color: #999 !important;
       cursor: not-allowed;
     }
-    /* Cores padrão (não selecionado) */
+    /* Cores padrão */
     .v label { background: #e8f5e8; color: var(--verde); }
     .e label { background: #f0f0f0; color: #555; }
     .d label { background: #ffe6e6; color: var(--vermelho); }
-    /* Cores quando selecionado */
+    /* Cores selecionado */
     .v input:checked + label { background: var(--verde); color: #fff; }
     .e input:checked + label { background: var(--cinza); color: #fff; }
     .d input:checked + label { background: var(--vermelho); color: #fff; }
@@ -180,16 +180,16 @@
     const ROUNDS = 11;
     const tbody = document.querySelector('#tabela tbody');
 
-    // Criar linhas
+    // Criar linhas com <span> para evitar conflito de eventos
     for (let i = 1; i <= ROUNDS; i++) {
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${i}</td>
         <td><input type="number" class="adv" min="0" step="1" /></td>
         <td class="resultado">
-          <span class="v"><input type="radio" name="res${i}" value="v" disabled><label>V</label></span>
-          <span class="e"><input type="radio" name="res${i}" value="e" disabled><label>E</label></span>
-          <span class="d"><input type="radio" name="res${i}" value="d" disabled><label>D</label></span>
+          <span class="v"><input type="radio" name="res${i}" value="v" id="v${i}" disabled><label for="v${i}">V</label></span>
+          <span class="e"><input type="radio" name="res${i}" value="e" id="e${i}" disabled><label for="e${i}">E</label></span>
+          <span class="d"><input type="radio" name="res${i}" value="d" id="d${i}" disabled><label for="d${i}">D</label></span>
         </td>
         <td class="delta">-</td>
         <td class="final"></td>
@@ -245,7 +245,7 @@
       });
     });
 
-    // Habilitar botões
+    // Habilitar botões ao digitar rating
     function updateButtons() {
       tbody.querySelectorAll('tr').forEach(tr => {
         const adv = tr.querySelector('.adv').value.trim();
@@ -274,7 +274,7 @@
         const tdDelta = tr.querySelector('.delta');
         const tdFinal = tr.querySelector('.final');
 
-        if (!radio) {
+        if (!radio || adv <= 0) {
           tdDelta.textContent = '-';
           tdFinal.textContent = '';
           return;
@@ -282,11 +282,10 @@
 
         const S = radio.value === 'v' ? 1 : (radio.value === 'e' ? 0.5 : 0);
         let delta = 0;
-        const isUnrated = adv <= 0;
-        const ignore = (tipo === 'cbx' || tipo === 'fpbx') && isUnrated;
+        const ignore = (tipo === 'cbx' || tipo === 'fpbx') && adv <= 0;
 
         if (!ignore && adv > 0) {
-          let dr = adv - ratingBase;  // CORRETO: dr = adversário - seu rating
+          let dr = adv - ratingBase;
           dr = clamp(dr, -800, 800);
           const E = getExpected(dr, tipo);
           const deltaRaw = K * (S - E);
@@ -317,11 +316,11 @@
       `;
     }
 
-    // Eventos em tempo real
+    // Eventos: digitar rating, mudar K, clicar V/E/D
     document.getElementById('ratingInicial').addEventListener('input', calcular);
     document.getElementById('kManual').addEventListener('change', calcular);
     tbody.addEventListener('input', () => { updateButtons(); calcular(); });
-    tbody.addEventListener('change', () => { updateButtons(); calcular(); });
+    tbody.addEventBOTAO.addEventListener('change', calcular); // <--- ESSA LINHA É A CHAVE
 
     // Inicializar
     updateButtons();
